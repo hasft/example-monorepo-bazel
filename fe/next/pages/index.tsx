@@ -1,5 +1,5 @@
 import * as React from 'react';
 
 export default function() {
-    return <div>home</div>
+    return <div>HOME</div>
 }

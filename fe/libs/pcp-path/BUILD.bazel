@@ -1,0 +1,31 @@
+load("//:jest.bzl", "jest_test")
+
+jest_test(
+    name = "test",
+    srcs = [
+        "index.test.js",
+        "path.test.js"
+    ],
+    jest_config = "//:jest.config.js",
+    tags = [
+        # Need to set the pwd to avoid jest needing a runfiles helper
+        # Windows users with permissions can use --enable_runfiles
+        # to make this test work
+        "no-bazelci-windows",
+        # TODO: why does this fail almost all the time, but pass on local Mac?
+        "no-bazelci-mac",
+    ],
+    deps = [
+        "//:babel.config.js",
+        "index.js",
+        "pcp-path.js",
+        "parsePath.js",
+        "query.js",
+        "@npm//lodash.get",
+        "@npm//@babel/core",
+        "@npm//@babel/preset-env",
+        "@npm//@jest/transform",
+        "@npm//babel-jest",
+    ],
+)
+
