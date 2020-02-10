@@ -1,0 +1,40 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@npm//next:index.bzl", "next")
+
+EXCLUDE_PATTERNS = [
+    ".next/**",
+    "out/**",
+    "assets/**",    
+]
+
+filegroup(
+    name = "sources",
+    srcs = glob(
+        ["**/*.*"],
+        exclude = EXCLUDE_PATTERNS,
+    ),
+)
+
+load("@npm//next:index.bzl", "next")
+
+DEPS = [
+    "//:package.json",
+    "//:tsconfig.json",
+    "@npm//typescript",
+    "@npm//@types/react",
+    "@npm//@types/node"
+]
+
+next(
+    name = "app",
+    args = [
+        "dev",
+        "fe/next",
+        "-p",
+        "3001",
+    ],
+    data = DEPS + [
+        ":sources",
+    ],
+)
