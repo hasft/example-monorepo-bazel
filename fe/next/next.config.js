@@ -1,6 +1,8 @@
 const path = require("path");
 const fs = require("fs");
 
+
+console.log('argv', `../${process.argv.slice(-1)[0]}`);
 let config = {
   pageExtensions: ["tsx", "md", "mdx"],
   cssModules: true,
