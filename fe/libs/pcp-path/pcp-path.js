@@ -1,18 +1,56 @@
-class PcpPath {
-  constructor(path) {
-    this.path = path;
-    this.query = null;
-  }
+import get from 'lodash.get';
+import isEmpty from 'lodash.isempty';
+import parsePath from './parsePath';
+import pcpQuery from './pcp-query';
 
-  parse() {
-    this.query = {
-      category_id: 'p-2016'
-    };
-    
-    return this;
-  }
+export class PcpPath {
+    constructor(path, query) {
+        this.path = path;
+        this.query = null;
+    }
+
+    getCategoryId() {
+        const parsedPath = parsePath(this.path);
+        const secondDir = get(parsedPath, ['dir', 1]);
+
+        if (!secondDir) return null;
+        
+        const id = get(/p-[\d$]+/.exec(secondDir), [0], null);
+        const splittedId = id ? id.split("-") : null;
+        return get(splittedId, [1], null);
+    }
+
+    getCategoryName() {
+        const parsedPath = parsePath(this.path);
+        const listOfCategoryDir = get(parsedPath, 'dir').slice(1,4);
+        return !this.getCategoryId() ? listOfCategoryDir.join() : null;
+    }
+
+    getBrandOnPath() {
+        const parsedPath = parsePath(this.path);
+        return get(parsedPath, ['dir', 4], null);
+    }
+
+    parse() {
+        const parsedPath = parsePath(this.path);
+
+        return {
+            path: this.path,
+            query: pcpQuery(
+                parsedPath.query,
+                this.getCategoryId(),
+                this.getCategoryName(),
+                this.getBrandOnPath()
+            ).stringify()
+            
+        };
+    }
 }
 
 export default function pcpPath(path) {
-  return new PcpPath(path).parse();
+    if(isEmpty(path)) {
+        return undefined;
+    }
+    
+    return new PcpPath(path);
 }
