@@ -1,5 +1,7 @@
+import get from 'lodash.get';
 import isEmpty from 'lodash.isempty';
 import parseQuery from './parseQuery';
+import pcpFilter from './pcp-filter';
 
 export class PcpQuery {
     constructor(query, customQuery) {
@@ -7,19 +9,21 @@ export class PcpQuery {
         this.customQuery = customQuery;
     }
 
-    collectBrand(brandOnPath, brandOnFq) {
-        
-    }
-
     stringify() {
-        
+        return '';
     }
 
     parse() {
+        const parsedQuery = parseQuery(this.query);
+        const cat_id = get(this.customQuery, 'category_id', null);
+        const cat_name = get(this.customQuery, 'category_name', null);
+        const fq = get(parsedQuery, 'fq', null);
+        const parsedFilter = fq ? pcpFilter(fq).parse() : fq;
+
         return {
-            ...this.query,
-            category_id: this.customQuery.category_id || null,
-            category_name: this.customQuery.category_name || null
+            category_id: cat_id,
+            category_name: cat_name,
+            fq: parsedFilter
         };
     }
 }

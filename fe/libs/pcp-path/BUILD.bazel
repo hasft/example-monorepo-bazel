@@ -6,6 +6,7 @@ jest_test(
         "pcp-path.test.js",
         "path.test.js",
         "pcp-query.test.js",
+        "pcp-filter.test.js"
     ],
     jest_config = "//:jest.config.js",
     tags = [
@@ -23,6 +24,7 @@ jest_test(
         "parsePath.js",
         "pcp-query.js",
         "parseQuery.js",
+        "pcp-filter.js",
         "@npm//qs",
         "@npm//lodash.get",
         "@npm//lodash.isempty",

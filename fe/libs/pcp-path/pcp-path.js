@@ -23,7 +23,7 @@ export class PcpPath {
     getCategoryName() {
         const parsedPath = parsePath(this.path);
         const listOfCategoryDir = get(parsedPath, 'dir').slice(1,4);
-        return !this.getCategoryId() ? listOfCategoryDir.join() : null;
+        return isEmpty(this.getCategoryId()) ? listOfCategoryDir.join() : null;
     }
 
     getBrandOnPath() {
@@ -33,15 +33,13 @@ export class PcpPath {
 
     parse() {
         const parsedPath = parsePath(this.path);
-
         return {
-            path: this.path,
             query: pcpQuery(
                 parsedPath.query,
                 this.getCategoryId(),
                 this.getCategoryName(),
                 this.getBrandOnPath()
-            ).stringify()
+            ).parse()
             
         };
     }

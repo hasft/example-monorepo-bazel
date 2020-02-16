@@ -33,3 +33,4 @@ test("get brandOnPath", () => {
     expect(pcpPath('/category/wanita/pakaian/kemeja/nevada').getBrandOnPath()).toBe('nevada');
     expect(pcpPath('/category/wanita/pakaian/kemeja/nevada--cardinal').getBrandOnPath()).toBe('nevada--cardinal');
 });
+
