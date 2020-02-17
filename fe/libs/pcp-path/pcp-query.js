@@ -13,12 +13,16 @@ export class PcpQuery {
         return '';
     }
 
+
+
     parse() {
         const parsedQuery = parseQuery(this.query);
         const cat_id = get(this.customQuery, 'category_id', null);
         const cat_name = get(this.customQuery, 'category_name', null);
+        const brand_name = get(this.customQuery, 'brand_name');
         const fq = get(parsedQuery, 'fq', null);
-        const parsedFilter = fq ? pcpFilter(fq).parse() : fq;
+
+        const parsedFilter = fq ? pcpFilter(fq, brand_name).parse() : fq;
 
         return {
             category_id: cat_id,

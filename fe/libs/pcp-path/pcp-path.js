@@ -36,9 +36,11 @@ export class PcpPath {
         return {
             query: pcpQuery(
                 parsedPath.query,
-                this.getCategoryId(),
-                this.getCategoryName(),
-                this.getBrandOnPath()
+                {
+                    category_id: this.getCategoryId(),
+                    category_name: this.getCategoryName(),
+                    brand_name: this.getBrandOnPath()
+                }
             ).parse()
             
         };

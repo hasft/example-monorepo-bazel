@@ -34,3 +34,16 @@ test("get brandOnPath", () => {
     expect(pcpPath('/category/wanita/pakaian/kemeja/nevada--cardinal').getBrandOnPath()).toBe('nevada--cardinal');
 });
 
+test("pase oath", () => {
+    expect(pcpPath("/category/p-206").parse())
+        .toEqual({query: {category_id: "206", category_name: null, fq: null}});
+    expect(pcpPath("/category/wanita/pakaian/kemeja?fq=size:X").parse())
+        .toEqual({query: {category_id: null, category_name: "wanita,pakaian,kemeja", fq: {size: "X"}}});
+    expect(pcpPath("/category/p-206?fq=size:X").parse())
+        .toEqual({query: {category_id: "206", category_name: null, fq: {size: "X"}}});
+    expect(pcpPath("/category/wanita/pakaian/kemeja/nevada--cardinal?fq=size:X,brand_name:nevada").parse())
+        .toEqual({query: {category_id: null, category_name: "wanita,pakaian,kemeja",  fq: {size: "X", brand_name: "nevada", brand_name: "cardinal"}}});
+});
+
+
+
