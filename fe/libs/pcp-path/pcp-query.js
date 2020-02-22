@@ -4,27 +4,22 @@ import parseQuery from './parseQuery';
 import pcpFilter from './pcp-filter';
 
 export class PcpQuery {
-    constructor(query, customQuery) {
+    constructor(query, customQuery, customFilter) {
         this.query = query;
         this.customQuery = customQuery;
+        this.customFilter = customFilter;
     }
-
-    stringify() {
-        return '';
-    }
-
-
 
     parse() {
         const parsedQuery = parseQuery(this.query);
         const cat_id = get(this.customQuery, 'category_id', null);
         const cat_name = get(this.customQuery, 'category_name', null);
-        const brand_name = get(this.customQuery, 'brand_name');
-        const fq = get(parsedQuery, 'fq', null);
+        const filter = get(parsedQuery, 'fq', null);
 
-        const parsedFilter = fq ? pcpFilter(fq, brand_name).parse() : fq;
+        const parsedFilter = pcpFilter(filter, this.customFilter).parse();
 
         return {
+            ...parsedQuery,
             category_id: cat_id,
             category_name: cat_name,
             fq: parsedFilter
@@ -32,6 +27,6 @@ export class PcpQuery {
     }
 }
 
-export default function pcpQuery(query, customQuery) {
-    return new PcpQuery(query, customQuery);
+export default function pcpQuery(query, customQuery, customFilter) {
+    return new PcpQuery(query, customQuery, customFilter);
 }

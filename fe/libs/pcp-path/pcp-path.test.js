@@ -34,15 +34,28 @@ test("get brandOnPath", () => {
     expect(pcpPath('/category/wanita/pakaian/kemeja/nevada--cardinal').getBrandOnPath()).toBe('nevada--cardinal');
 });
 
-test("pase oath", () => {
-    expect(pcpPath("/category/p-206").parse())
-        .toEqual({query: {category_id: "206", category_name: null, fq: null}});
-    expect(pcpPath("/category/wanita/pakaian/kemeja?fq=size:X").parse())
-        .toEqual({query: {category_id: null, category_name: "wanita,pakaian,kemeja", fq: {size: "X"}}});
-    expect(pcpPath("/category/p-206?fq=size:X").parse())
-        .toEqual({query: {category_id: "206", category_name: null, fq: {size: "X"}}});
-    expect(pcpPath("/category/wanita/pakaian/kemeja/nevada--cardinal?fq=size:X,brand_name:nevada").parse())
-        .toEqual({query: {category_id: null, category_name: "wanita,pakaian,kemeja",  fq: {size: "X", brand_name: "nevada", brand_name: "cardinal"}}});
+test("parse", () => {
+    // expect(pcpPath('/category/p-206?sorts=someSorts&fq=brand:2019').parse())
+    //     .toEqual({query: {
+    //         sorts: 'someSorts',
+    //         category_id: '206',
+    //         category_name: null,
+    //         fq: {
+    //             brand: ['2019']
+    //         }
+    //     }});
+
+    // expect(pcpPath('/category/wanita/pakaian/kemeja/nevada?sorts=someSorts&fq=brand:2019,size:X').parse())
+    //     .toEqual({query: {
+    //         sorts: 'someSorts',
+    //         category_id: null,
+    //         category_name: 'wanita,pakaian,kemeja',
+    //         fq: {
+    //             brand: ['2019'],
+    //             size: ['X'],
+    //             brand_name: ['nevada']
+    //         }
+    //     }});
 });
 
 

@@ -33,14 +33,20 @@ export class PcpPath {
 
     parse() {
         const parsedPath = parsePath(this.path);
+
         return {
             query: pcpQuery(
                 parsedPath.query,
                 {
                     category_id: this.getCategoryId(),
-                    category_name: this.getCategoryName(),
-                    brand_name: this.getBrandOnPath()
-                }
+                    category_name: this.getCategoryName()
+                },
+                [{
+
+                    label: 'brand_name',
+                    value: this.getBrandOnPath(),
+                    splitter: '--'
+                }]
             ).parse()
             
         };

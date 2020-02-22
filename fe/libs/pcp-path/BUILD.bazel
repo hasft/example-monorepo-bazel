@@ -26,6 +26,7 @@ jest_test(
         "parseQuery.js",
         "pcp-filter.js",
         "@npm//qs",
+        "@npm//lodash.union",
         "@npm//lodash.get",
         "@npm//lodash.isempty",
         "@npm//@babel/core",
