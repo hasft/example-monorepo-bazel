@@ -11,7 +11,11 @@ export class PcpFilter {
         const transformedFilter = this.transformFilter();
         let parsedCustomFilter = this.customFilter.reduce((acc, obj, i) => {
             const mappedValue = obj.value && obj.splitter ? obj.value.split(obj.splitter) : [obj.value];
-            acc[obj.label] = mappedValue;
+
+            if(obj.value) {
+                acc[obj.label] = mappedValue;                
+            }
+
             return acc;
         }, {});
 

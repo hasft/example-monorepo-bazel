@@ -35,27 +35,27 @@ test("get brandOnPath", () => {
 });
 
 test("parse", () => {
-    // expect(pcpPath('/category/p-206?sorts=someSorts&fq=brand:2019').parse())
-    //     .toEqual({query: {
-    //         sorts: 'someSorts',
-    //         category_id: '206',
-    //         category_name: null,
-    //         fq: {
-    //             brand: ['2019']
-    //         }
-    //     }});
+    expect(pcpPath('/category/p-206?sorts=someSorts&fq=brand:2019').parse())
+        .toEqual({query: {
+            sorts: 'someSorts',
+            category_id: '206',
+            category_name: null,
+            fq: {
+                brand: ['2019']
+            }
+        }});
 
-    // expect(pcpPath('/category/wanita/pakaian/kemeja/nevada?sorts=someSorts&fq=brand:2019,size:X').parse())
-    //     .toEqual({query: {
-    //         sorts: 'someSorts',
-    //         category_id: null,
-    //         category_name: 'wanita,pakaian,kemeja',
-    //         fq: {
-    //             brand: ['2019'],
-    //             size: ['X'],
-    //             brand_name: ['nevada']
-    //         }
-    //     }});
+    expect(pcpPath('/category/wanita/pakaian/kemeja/nevada--cardinal?sorts=someSorts&fq=brand:2019,size:X').parse())
+        .toEqual({query: {
+            sorts: 'someSorts',
+            category_id: null,
+            category_name: 'wanita,pakaian,kemeja',
+            fq: {
+                brand: ['2019'],
+                size: ['X'],
+                brand_name: ['nevada', 'cardinal']
+            }
+        }});
 });
 
 

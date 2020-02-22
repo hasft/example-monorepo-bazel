@@ -20,4 +20,7 @@ test("parse pcp query", () => {
     expect(pcpQuery({fq: "size:X,brand_name:nevada"}, {category_id: null, category_name: 'wanita'}).parse())
         .toEqual({...x, category_id: null, category_name: 'wanita', fq: {size: ["X"], brand_name: ['nevada']}});
 
+    expect(pcpQuery({fq: "size:X,brand_name:nevada"}, {category_id: null, category_name: 'wanita'}, [{value: 'nevada--cardinal', splitter: '--', label: 'brand_name'}]).parse())
+        .toEqual({...x, category_id: null, category_name: 'wanita', fq: {size: ["X"], brand_name: ['nevada', 'cardinal']}});
+
 });

@@ -29,4 +29,16 @@ test("custom filter", () => {
             value: 'a'
         }]).parse())
         .toEqual({brand: ['200'], size: ['X'], brand_name: ['nevada', 'cardinal', 'adidas'], something: ['a']});
+
+    expect(pcpFilter(
+        "brand:200,size:X,brand_name:adidas",
+        [{
+            label: 'brand_name',
+            value: null,
+            splitter: '--'
+        },{
+            label: 'something',
+            value: 'a'
+        }]).parse())
+        .toEqual({brand: ['200'], size: ['X'], brand_name: ['adidas'], something: ['a']});
 });
