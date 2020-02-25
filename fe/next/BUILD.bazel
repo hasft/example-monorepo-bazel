@@ -19,6 +19,7 @@ filegroup(
 load("@npm//next:index.bzl", "next")
 
 DEPS = [
+    "//lang/js:bin",
     "//:package.json",
     "//:tsconfig.json",
     "@npm//typescript",
