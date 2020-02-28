@@ -19,12 +19,19 @@ filegroup(
 load("@npm//next:index.bzl", "next")
 
 DEPS = [
-    "//lang/js:bin",
     "//:package.json",
     "//:tsconfig.json",
+    "//lang/ts:lib",
     "@npm//typescript",
     "@npm//@types/react",
-    "@npm//@types/node"
+    "@npm//@types/react-dom",
+    "@npm//@types/node",
+    "@npm//@types/lodash.pick",
+    "@npm//@types/lodash.isempty",
+    "@npm//nookies",
+    "@npm//lodash.pick",
+    "@npm//moment",
+    "@npm//@types/moment"
 ]
 
 next(
