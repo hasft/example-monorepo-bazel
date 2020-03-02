@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { NextPage, NextPageContext } from 'next';
-import {MmUserInterface} from 'mm/fe/next/pages/_app';
+
 
 interface HomeProps {
-    user: MmUserInterface
+    user: {}
 }
 
 const Home: NextPage<HomeProps> = (props) => {

@@ -26,12 +26,7 @@ DEPS = [
     "@npm//@types/react",
     "@npm//@types/react-dom",
     "@npm//@types/node",
-    "@npm//@types/lodash.pick",
     "@npm//@types/lodash.isempty",
-    "@npm//nookies",
-    "@npm//lodash.pick",
-    "@npm//moment",
-    "@npm//@types/moment"
 ]
 
 next(

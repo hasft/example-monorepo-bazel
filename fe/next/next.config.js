@@ -11,7 +11,15 @@ let config = {
     config.resolve.plugins = config.resolve.plugins || [];
     config.resolve.alias = {
       ...config.resolve.alias,
+      "mm": path.resolve(__dirname, "../../")
     };
+
+    config.module.rules.push({
+      test: /\.jsx?$/,
+      exclude: /node_modules/,
+      use: [{ loader: require.resolve("umd-compat-loader") }]
+    });
+
     // Tell webpack to preserve information about file names so we can use them for paths.
     config.node = { __filename: true, fs: "empty", child_process: "empty" };
     return config;
