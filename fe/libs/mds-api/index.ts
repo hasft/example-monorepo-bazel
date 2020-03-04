@@ -5,6 +5,7 @@ import MdsApiCookie, { Cookie } from "mds/fe/libs/mds-cookie";
 import MdsApiInstance from "./instance";
 import { ApiResponse } from "apisauce";
 import { MdsApiParsed, MdsApiConfig, MdsApiHeader, FetchInitResponse } from "./types";
+import { getScreen } from "./utils";
 
 class MdsApiError {
   code: string;
@@ -30,9 +31,10 @@ export default class MdsApi {
     this.cookie = cookie;
   }
 
-  async fetchInit(): Promise<any> {
+  private async fetchInit(): Promise<any> {
     const api = new MdsApiInstance({ ...this.config, baseURL: this.config.initBaseURL }).getSauce();
-    const response = await api.get("/v1/init?platform=mobilesite&version=1.22.0");
+    const platform = getScreen(this.config.ua) === "desktop" ? "website" : "mobilesite";
+    const response = await api.get(`/v1/init?platform=${platform}&version=1.22.0`);
 
     return response;
   }
@@ -45,9 +47,8 @@ export default class MdsApi {
       const { ok, problem, data } = await this.fetchInit();
 
       if (ok) {
-        return data;
+        return data.data;
       } else {
-        console.log("HERE", problem);
         return new MdsApiError({ code: problem, message: data });
       }
     } else {
@@ -55,12 +56,9 @@ export default class MdsApi {
     }
   }
 
-  getServices() {
-    const cookie = new MdsApiCookie(this.cookie);
-    const bulk = cookie.get(this.config.bulkName);
-    const decodedBulk = cookie.decodeLZ(bulk);
-
-    return decodedBulk ? { [this.config.bulkName]: decodedBulk } : null;
+  async getServices() {
+    const bulk = await this.getBulk();
+    return get(bulk, "service_url");
   }
 
   parse(): any {

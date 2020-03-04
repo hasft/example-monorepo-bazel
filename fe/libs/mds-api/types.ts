@@ -26,9 +26,7 @@ export interface MdsApiStatus {}
 
 export interface MdsServices {}
 
-export interface FetchInitResponse {
-  app_version: {};
-}
+export interface FetchInitResponse {}
 
 export interface MdsApiParsed {
   services: MdsServices;

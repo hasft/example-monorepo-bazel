@@ -9,18 +9,6 @@ describe("get services", () => {
   });
 
   describe("parse", () => {
-    describe("get services", () => {
-      test("handle falsy bulkinit on cookie bulk", () => {
-        const mdsAPi = new MdsApi(config, {});
-        expect(mdsAPi.getServices()).toBeNull();
-      });
-
-      test("decode bulkinit on cookie", () => {
-        const mdsAPi = new MdsApi(config, { bulk_init: "N4IgzgpgTgbglgYwmEAuUBDNAmAvroA=" });
-        expect(mdsAPi.getServices()).toMatchObject({ bulk_init: { services: { a: 2 } } });
-      });
-    });
-
     describe("fetchInit", () => {
       //TODO: mock
       const mdsAPi = new MdsApi(config, {});
@@ -40,9 +28,16 @@ describe("get services", () => {
         expect(bulky).toHaveProperty("service_url");
       });
       test("handle empty bulk", async () => {
-        const mdsAPi = new MdsApi(config, {});
-        const bulky = await mdsAPi.getBulk();
-        expect(bulky.data).toHaveProperty("service_url");
+        const mdsApi = new MdsApi(config, {});
+        const bulky = await mdsApi.getBulk();
+        expect(bulky).toHaveProperty("service_url");
+      });
+    });
+
+    describe("getServices", () => {
+      test("handle empty bulk", async () => {
+        const mdsApi = new MdsApi(config, {});
+        expect(await mdsApi.getServices()).toHaveProperty("promo");
       });
     });
   });
