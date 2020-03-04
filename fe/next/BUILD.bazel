@@ -19,9 +19,12 @@ filegroup(
 load("@npm//next:index.bzl", "next")
 
 DEPS = [
+    "//:.env",
     "//:package.json",
     "//:tsconfig.json",
-    "//lang/ts:lib",
+    "//fe/libs/mds-api:lib",
+    "//fe/libs/mds-cookie:lib",
+    "@npm//dotenv",
     "@npm//typescript",
     "@npm//@types/react",
     "@npm//@types/react-dom",

@@ -1,23 +1,20 @@
-import * as React from 'react';
-import { NextPage, NextPageContext } from 'next';
-
+import * as React from "react";
+import { NextPage, NextPageContext } from "next";
 
 interface HomeProps {
-    user: {}
+  user: {};
 }
 
-const Home: NextPage<HomeProps> = (props) => {
-    console.log(props)
-    return (
-        <div>        
-            <div>home</div>
-        </div>
-    )
-}
+const Home: NextPage<HomeProps> = props => {
+  return (
+    <div>
+      <div>home</div>
+    </div>
+  );
+};
 
 Home.getInitialProps = async (ctx: NextPageContext & HomeProps) => {
-    return {user: ctx.user}
-}
-
+  return { user: ctx.user };
+};
 
 export default Home;

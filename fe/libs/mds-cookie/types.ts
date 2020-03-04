@@ -1,3 +1,7 @@
-export type GetOptions = {
-  decodeVal: boolean
+export interface MdsUserCookie {
+  [key: string]: string;
 }
+
+export type GetOptions = {
+  decodeVal: boolean;
+};

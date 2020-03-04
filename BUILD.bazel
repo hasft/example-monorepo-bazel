@@ -7,5 +7,6 @@ exports_files([
     "babel.config.js",
     "tsconfig.json",
     "package.json",
-    "webpack.config.js"
+    "webpack.config.js",
+    ".env"
 ])

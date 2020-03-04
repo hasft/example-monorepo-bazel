@@ -1,32 +1,32 @@
-import { MdsApiConfig } from ".";
-import get from 'lodash.get';
-
-export type Screen = 'mobile' | 'desktop'
+import { MdsApiConfig } from "./types";
+import { getScreen } from "./utils";
+import { create, ApisauceInstance } from "apisauce";
 
 export default class MdsApiInstance {
   config: MdsApiConfig;
-  screen: Screen;
-  
-  constructor(obj: {screen: Screen, config: MdsApiConfig}) {
-    this.screen = obj.screen;
-    this.config = obj.config;
+  constructor(config: MdsApiConfig) {
+    this.config = config;
   }
 
-  getInstanceConfig(screen) {
-    const {ua, ...rest} = this.config;
+  get screen() {
+    return getScreen(this.config.ua);
+  }
 
-    return {
-      ...rest,
+  getSauce(): ApisauceInstance {
+    const configByScreen = {
+      ...this.config,
+      baseURL: this.config.baseURL,
       headers: {
-        ...rest.headers,
-        client_id: get(rest, `headers.client_id.${screen}`),
-        client_secret: get(rest, `headers.client_secret.${screen}`)
-      }
-    }
-  }
+        ...this.config.headers,
+        client_id: this.config.headers.client_id[this.screen],
+        client_secret: this.config.headers.client_secret[this.screen],
+      },
+    };
 
-  public create() {
-    const headers = this.getInstanceConfig(this.screen);
-    return headers;
+    const { ua, initBaseURL, bulkName, ...rest } = configByScreen;
+
+    const instance = create(rest);
+
+    return instance;
   }
 }
