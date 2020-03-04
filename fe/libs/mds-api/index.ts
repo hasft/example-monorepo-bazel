@@ -3,19 +3,10 @@ import isEmpty from "lodash.isempty";
 import MobileDetect from "mobile-detect";
 import MdsApiCookie, { Cookie } from "mds/fe/libs/mds-cookie";
 import MdsApiInstance from "./instance";
+import MdsApiError from "./error";
 import { ApiResponse } from "apisauce";
 import { MdsApiParsed, MdsApiConfig, MdsApiHeader, FetchInitResponse } from "./types";
 import { getScreen } from "./utils";
-
-class MdsApiError {
-  code: string;
-  message: string;
-
-  constructor({ code, message }) {
-    this.code = code;
-    this.message = message;
-  }
-}
 
 export default class MdsApi {
   config: MdsApiConfig;
@@ -56,12 +47,20 @@ export default class MdsApi {
     }
   }
 
+  async getSegment() {
+    const bulk = await this.getBulk();
+    return get(bulk, "segment");
+  }
+
   async getServices() {
     const bulk = await this.getBulk();
     return get(bulk, "service_url");
   }
 
-  parse(): any {
-    return { services: null };
+  parse() {
+    return {
+      services: this.getServices(),
+      segment: this.getSegment(),
+    };
   }
 }

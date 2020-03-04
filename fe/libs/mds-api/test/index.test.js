@@ -1,6 +1,29 @@
 import MdsApi from "../index.js";
 import { config } from "./constants";
 
+beforeEach(() => {
+  MdsApi.prototype.fetchInit = jest.fn().mockImplementation(() => {
+    return {
+      ok: true,
+      problem: null,
+      data: {
+        data: {
+          segment: [
+            {
+              id: 195,
+              key: "wanita",
+              title: "WANITA",
+            },
+          ],
+          service_url: {
+            promo: { url: "https://services.mataharimall.co/promo/v1", host: "promo" },
+          },
+        },
+      },
+    };
+  });
+});
+
 describe("get services", () => {
   describe("constructor", () => {
     test("handle error constructor", () => {
@@ -11,8 +34,9 @@ describe("get services", () => {
   describe("parse", () => {
     describe("fetchInit", () => {
       //TODO: mock
-      const mdsAPi = new MdsApi(config, {});
+
       test("fetch init", async () => {
+        const mdsAPi = new MdsApi(config, {});
         expect(await mdsAPi.fetchInit()).toHaveProperty("ok");
         expect(await mdsAPi.fetchInit()).toHaveProperty("problem");
       });
@@ -38,6 +62,13 @@ describe("get services", () => {
       test("handle empty bulk", async () => {
         const mdsApi = new MdsApi(config, {});
         expect(await mdsApi.getServices()).toHaveProperty("promo");
+      });
+    });
+
+    describe("getSegment", () => {
+      test("handle empty bulk", async () => {
+        const mdsApi = new MdsApi(config, {});
+        expect(await mdsApi.getSegment()).toBeTruthy();
       });
     });
   });
