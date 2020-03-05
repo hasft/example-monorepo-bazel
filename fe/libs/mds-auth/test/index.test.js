@@ -1,3 +1,4 @@
+import isEmpty from "lodash.isempty";
 import MdsApiAuth from "../index.js";
 import { config } from "./constants";
 
@@ -9,21 +10,44 @@ beforeEach(() => {
       data: { token: "some token" },
     },
   });
-
-  MdsApiAuth.prototype.getUser = jest.fn().mockImplementation(() => {
-    const mock = new MdsApiAuth();
-    const guest = mock.loginAsGuest();
-    return guest.data.data;
-  });
 });
 
 describe("parse", () => {
   describe("anonymous", () => {
-    test("should check user uid", async () => {
-      const mdsAuth = new MdsApiAuth(config, {});
+    test("should loginAsguest if no uidcookie", async () => {
+      const cookie = {};
+
+      MdsApiAuth.prototype.getUser = jest.fn().mockImplementation(() => {
+        const mock = new MdsApiAuth(config, cookie);
+
+        if (isEmpty(cookie)) {
+          const guest = mock.loginAsGuest();
+          return guest.data.data;
+        } else {
+          return null;
+        }
+      });
+
+      const mdsAuth = new MdsApiAuth(config, cookie);
       const user = await mdsAuth.getUser();
       expect(user).toHaveProperty("token");
       expect(mdsAuth.loginAsGuest).toHaveBeenCalledTimes(1);
+    });
+
+    test("should return a mirrror of anonymouslogin data structure if has uid", async () => {
+      const cookie = { uid: "aaa" };
+      MdsApiAuth.prototype.getUser = jest.fn().mockImplementation(() => {
+        const mock = new MdsApiAuth(config, cookie);
+
+        if (isEmpty(cookie)) {
+          return null;
+        } else {
+          return { token: "some token" };
+        }
+      });
+      const mdsAuth = new MdsApiAuth(config, cookie);
+      const user = await mdsAuth.getUser();
+      expect(user).toHaveProperty("token");
     });
   });
 });
