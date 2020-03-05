@@ -1,18 +1,18 @@
 import get from "lodash.get";
 import isEmpty from "lodash.isempty";
 import MobileDetect from "mobile-detect";
-import MdsApiCookie, { Cookie } from "mds/fe/libs/mds-cookie";
-import MdsApiInstance from "./instance";
-import MdsApiError from "./error";
-import { ApiResponse } from "apisauce";
-import { MdsApiParsed, MdsApiConfig, MdsApiHeader, FetchInitResponse } from "./types";
+import MdsApiCookie from "mds/fe/libs/mds-cookie";
+import MdsApiInstance from "mds/fe/libs/mds-instance";
+import MdsApiError from "mds/fe/libs/mds-error";
 import { getScreen } from "./utils";
+import { MdsConfig, MdsInitResponse } from "mds/fe/libs/mds-types";
+import { Cookie } from "universal-cookie";
 
 export default class MdsApi {
-  config: MdsApiConfig;
+  config: MdsConfig;
   cookie: Cookie;
 
-  constructor(config: MdsApiConfig, cookie: Cookie) {
+  constructor(config: MdsConfig, cookie: Cookie) {
     if (isEmpty(config) || isEmpty(cookie)) {
       console.warn("argument config and cookie is required");
     }
@@ -23,16 +23,17 @@ export default class MdsApi {
   }
 
   private async fetchInit(): Promise<any> {
-    const api = new MdsApiInstance({ ...this.config, baseURL: this.config.initBaseURL }).getSauce();
+    const api = new MdsApiInstance(this.config).getSauce();
+    api.setBaseURL(this.config.initBaseURL);
     const platform = getScreen(this.config.ua) === "desktop" ? "website" : "mobilesite";
     const response = await api.get(`/v1/init?platform=${platform}&version=1.22.0`);
 
     return response;
   }
 
-  async getBulk(): Promise<FetchInitResponse | MdsApiError> {
+  async getBulk(): Promise<MdsInitResponse | MdsApiError> {
     const cookie = new MdsApiCookie(this.cookie);
-    const bulk = cookie.get(this.config.bulkName);
+    const bulk = cookie.get(this.config.bulkName + "init");
 
     if (isEmpty(bulk)) {
       const { ok, problem, data } = await this.fetchInit();
@@ -47,6 +48,10 @@ export default class MdsApi {
     }
   }
 
+  async getAuth() {
+    //    const auth = new MdsApiAuth(this.cookie);
+  }
+
   async getSegment() {
     const bulk = await this.getBulk();
     return get(bulk, "segment");
@@ -57,10 +62,11 @@ export default class MdsApi {
     return get(bulk, "service_url");
   }
 
-  parse() {
+  async parse() {
     return {
-      services: this.getServices(),
-      segment: this.getSegment(),
+      services: await this.getServices(),
+      segment: await this.getSegment(),
+      auth: await this.getAuth(),
     };
   }
 }

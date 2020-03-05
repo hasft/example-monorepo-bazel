@@ -26,17 +26,3 @@ export const desiredHeaders = {
   client_id: "mds_web",
   client_secret: "60a114c91c41983174b484e188856fb3",
 };
-
-export const initResponse = {
-  data: {
-    app_version: {},
-    service_url: {
-      lovelist: {
-        url: "https://services.mataharimall.co/wishlist/v2",
-        host: "lovelist",
-      },
-    },
-  },
-  ok: true,
-  problem: null,
-};

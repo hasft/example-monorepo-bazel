@@ -2,6 +2,7 @@ import MdsApi from "../index.js";
 import { config } from "./constants";
 
 beforeEach(() => {
+  // mock async fetchInit
   MdsApi.prototype.fetchInit = jest.fn().mockImplementation(() => {
     return {
       ok: true,
@@ -34,11 +35,10 @@ describe("get services", () => {
   describe("parse", () => {
     describe("fetchInit", () => {
       //TODO: mock
-
       test("fetch init", async () => {
-        const mdsAPi = new MdsApi(config, {});
-        expect(await mdsAPi.fetchInit()).toHaveProperty("ok");
-        expect(await mdsAPi.fetchInit()).toHaveProperty("problem");
+        const mdsApi = new MdsApi(config, {});
+        expect(await mdsApi.fetchInit()).toHaveProperty("ok");
+        expect(await mdsApi.fetchInit()).toHaveProperty("problem");
       });
     });
 
@@ -71,5 +71,21 @@ describe("get services", () => {
         expect(await mdsApi.getSegment()).toBeTruthy();
       });
     });
+
+    describe("parse", () => {
+      test("parse initial mdsApi", async () => {
+        const mdsApi = new MdsApi(config, {});
+        const parsed = await mdsApi.parse();
+        expect(parsed.services).toHaveProperty("promo");
+        expect(parsed.segment).not.toBeFalsy();
+      });
+    });
+
+    // describe("getAuth", () => {
+    //   test("should check isLogin and if false fetchAuth", async () => {
+    //     const mdsApi = new MdsApi(config, {});
+    //     const auth = await mdsApi.getAuth();
+    //   });
+    // });
   });
 });

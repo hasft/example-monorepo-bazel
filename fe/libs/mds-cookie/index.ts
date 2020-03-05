@@ -2,7 +2,7 @@ import Cookie, { CookieSetOptions, CookieGetOptions } from "universal-cookie";
 import LZString from "lz-string";
 import get from "lodash.get";
 import isEmpty from "lodash.isempty";
-import { GetOptions } from "./types";
+import { OptionsGetUserCookie } from "mds/fe/libs/mds-types";
 
 const listOfKeysOnUserCookie = [
   "user.token",
@@ -12,10 +12,11 @@ const listOfKeysOnUserCookie = [
   "user.mds.rf.token",
   "user.mds.exp",
   "user.uid",
+  "isLogin",
 ];
 
 export default class MdsCookie extends Cookie {
-  public getUserCookies(options?: GetOptions): any | null {
+  public getUserCookie(options?: OptionsGetUserCookie): any | null {
     const cookies = this.getAll();
 
     const selected = Object.keys(cookies).reduce((acc, val) => {
@@ -40,6 +41,3 @@ export default class MdsCookie extends Cookie {
     return isEmpty(decoded) ? null : JSON.parse(decoded);
   }
 }
-
-export * from "universal-cookie";
-export * from "./types";

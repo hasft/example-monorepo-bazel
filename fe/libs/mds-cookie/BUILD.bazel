@@ -7,6 +7,7 @@ ts_library(
     srcs = glob(["**/*.ts"]),
     module_name = "@matahari/mds-cookie",
     deps = [
+        "//fe/libs/mds-types:lib",        
         "@npm//lz-string",
         "@npm//@types/lz-string",
         "@npm//universal-cookie",

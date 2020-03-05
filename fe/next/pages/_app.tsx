@@ -22,24 +22,25 @@ MyApp.getInitialProps = async ({ Component, ctx }) => {
       baseURL: process.env.BASE_URL,
       headers: {
         Authorization: null,
-        device_id: process.env.deviceId,
+        device_id: process.env.DEVICE_ID,
         client_id: {
-          desktop: process.env.clientIdDesktop,
-          mobile: process.env.clientIdMobile,
+          desktop: process.env.CLIENT_ID_DESKTOP,
+          mobile: process.env.CLIENT_ID_MOBILE,
         },
         client_secret: {
-          desktop: process.env.clientSecretDesktop,
-          mobile: process.env.clientSecretMobile,
+          desktop: process.env.CLIENT_SECRET_DESKTOP,
+          mobile: process.env.CLIENT_SECRET_MOBILE,
         },
       },
       ua: ctx.req.headers["user-agent"],
-      initBaseURL: process.env.initBaseURL,
+      initBaseURL: process.env.INIT_BASE_URL,
       bulkName: "bulk_init",
     },
     ctx.req.headers.cookie,
   );
 
-  console.log(mdsApi.parse());
+  const parsed = await mdsApi.parse();
+  console.log(parsed);
 
   ctx.user = {};
 

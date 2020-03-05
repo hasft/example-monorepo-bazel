@@ -11,12 +11,10 @@ export const config = {
       desktop: "60a114c91c41983174b484e188856fb3",
       mobile: "985bfd00b59026f51b057aee703b4106",
     },
-    client_version: "2.22.0",
   },
   ua:
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
   initBaseURL: "https://services.mataharimall.co/promo",
-  accountBaseURL: "https://services.mataharimall.co/account",
   bulkName: "bulk_",
 };
 

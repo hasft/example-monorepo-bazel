@@ -8,11 +8,18 @@ ts_library(
     module_name = "@matahari/mds-auth",
     deps = [
         "//fe/libs/mds-cookie:lib",
+        "//fe/libs/mds-instance:lib",
+        "//fe/libs/mds-error:lib",
+        "//fe/libs/mds-types:lib",
+        "@npm//mobile-detect",        
         "@npm//lodash.isempty",
         "@npm//@types/lodash.isempty",
         "@npm//lodash.get",
         "@npm//@types/lodash.get",
-        "@npm//moment"
+        "@npm//@types/node",
+        "@npm//universal-cookie",
+        "@npm//moment",
+        "@npm//apisauce"
     ]
 )
 
@@ -27,7 +34,7 @@ load("//:jest.bzl", "jest_test")
 jest_test(
     name = "test",
     srcs = [
-        "index.test.js",
+        "test/index.test.js",
     ],
     jest_config = "//:jest.config.js",
     tags = [
@@ -39,13 +46,18 @@ jest_test(
         "no-bazelci-mac",
     ],
     deps = [
+        "test/constants.js",
         ":init",
         "//:babel.config.js",
+        "//fe/libs/mds-cookie:lib",
+        "//fe/libs/mds-instance:lib",
+        "//fe/libs/mds-error:lib",                
         "@npm//@babel/core",
         "@npm//@babel/preset-env",
         "@npm//@jest/transform",
         "@npm//babel-jest",
         "@npm//@testing-library/dom",
         "@npm//@testing-library/jest-dom"
+
     ]
 )
