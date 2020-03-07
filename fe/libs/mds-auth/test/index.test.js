@@ -97,5 +97,16 @@ describe("MDSAUTH", () => {
       const guest = auth({}, {}).loginAsGuest();
       expect(guest).rejects.toHaveProperty("code", "constructor");
     });
+
+    test("handle err", async () => {
+      const guest = await auth({}, { ...config, accountBaseURL: "http://wrong.co" }).loginAsGuest();
+      expect(guest.problem).toBe("CLIENT_ERROR");
+    });
+
+    test("handle ok", async () => {
+      const guest = await auth({}).loginAsGuest();
+      expect(guest).toHaveProperty("ok");
+      expect(guest.ok).toBeTruthy();
+    });
   });
 });
