@@ -4,7 +4,13 @@ import isEmpty from "lodash.isempty";
 import MdsApiInstance from "mds/fe/libs/mds-instance";
 import MdsCookie from "mds/fe/libs/mds-cookie";
 import MdsApiError from "mds/fe/libs/mds-error";
-import { MdsConfig, MdsAuthParsed } from "mds/fe/libs/mds-types";
+import {
+  MdsConfig,
+  MdsAuthParsed,
+  MdsResponseAnonymousUser,
+  MdsUserStatus,
+  MdsUserCookie,
+} from "mds/fe/libs/mds-types";
 
 export default class MdsAuth {
   cookie: MdsCookie;
@@ -34,15 +40,30 @@ export default class MdsAuth {
     return response;
   }
 
-  async getUser(): Promise<any> {
+  getUserStatus(): MdsUserStatus {
+    const mdsCookie = new MdsCookie(this.cookie);
+    const ovoTokenExpiredTime = mdsCookie.get("user.mds.exp");
+    // const userToken = mdsCookie.get("user.token");
+    const isLogin = mdsCookie.get("isLogin");
+
+    if (isLogin === "false" && ovoTokenExpiredTime === "undefined") {
+      return "guest";
+    } else if (isLogin === "true" && ovoTokenExpiredTime !== "undefined") {
+      return "with_thor";
+    } else {
+      return "unknown";
+    }
+  }
+
+  async getUser(): Promise<MdsUserCookie | MdsApiError> {
     const mdsCookie = new MdsCookie(this.cookie);
     const uidCookie = mdsCookie.get("user.uid");
-
     if (isEmpty(uidCookie)) {
       const { ok, problem, data } = await this.loginAsGuest();
 
       if (ok) {
-        return data.data;
+        const res: MdsResponseAnonymousUser = data.data;
+        return mdsCookie.createUserCookie(res);
       } else {
         return new MdsApiError({ code: problem, message: data });
       }

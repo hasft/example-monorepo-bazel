@@ -4,6 +4,7 @@ describe("inherit", () => {
   it("inherit from Universal Cookie", () => {
     expect(new MdsCookie({ c: 3 }).get("c")).toBe(3);
   });
+
   it("handle own function", () => {
     expect(new MdsCookie({ "user.token": 4, other: 4 }).getUserCookie()).toStrictEqual({
       "user.token": 4,
@@ -18,7 +19,9 @@ describe("handle getUserCookie", () => {
     });
   });
   it("return null if no match", () => {
-    expect(new MdsCookie({ user: 4, other: 4 }, { decode: true }).getUserCookie()).toBe(null);
+    expect(new MdsCookie({ user: 4, other: 4 }, { decode: true }).getUserCookie()).toStrictEqual(
+      {},
+    );
   });
   it("handle parsed value", () => {
     expect(
@@ -36,5 +39,28 @@ describe("handle getUserCookie", () => {
 describe("handle encoded + decoded", () => {
   test("encode", () => {
     expect(new MdsCookie({}).encodeLZ({ services: { a: 2 } })).toBeTruthy();
+  });
+});
+
+describe("create user cookie", () => {
+  test("createUserCookie no data", () => {
+    expect(new MdsCookie({}).parseUserCookie()).toMatchObject({});
+  });
+
+  test("createUsercookie with wrong arg", () => {
+    const mdsCookie = new MdsCookie({ isLogin: "false" });
+    const userCookie = mdsCookie.parseUserCookie();
+
+    expect(userCookie).toMatchObject({});
+  });
+
+  test("createUsercookie with few arg", () => {
+    const mdsCookie = new MdsCookie({
+      isLogin: "false",
+      "user.token": "token",
+      "user.mds.exp": "mdsexp",
+    });
+    const userCookie = mdsCookie.parseUserCookie();
+    expect(userCookie).toMatchObject({ token: "token", thor_expiration: "mdsexp" });
   });
 });

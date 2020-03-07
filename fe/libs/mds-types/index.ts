@@ -1,4 +1,8 @@
+export * from "./types-api-response";
+
 export type Screen = "mobile" | "desktop";
+
+export type MdsUserStatus = "unknown" | "guest" | "with_thor";
 
 export type MdsHeader = {
   Authorization?: string | undefined | null;
@@ -25,7 +29,7 @@ export type MdsConfig = {
 };
 
 export type MdsAuthParsed = {
-  status: "unknown" | "guest" | "with_thor" | "without_thor";
+  status: MdsUserStatus;
   isExpired: boolean;
   isVerified: boolean;
   token: {
@@ -35,11 +39,31 @@ export type MdsAuthParsed = {
 };
 
 export type MdsUserCookie = {
-  [key: string]: string;
+  "user.token": string;
+  "user.exp": string;
+  "user.rf.token": string;
+  "user.mds.token": string;
+  "user.mds.rf.token": string | "undefined";
+  "user.mds.exp": string | "undefined";
+  "user.uid": string;
+  isLogin: "false" | "true";
+};
+
+export type MdsParsedUserCookie = {
+  token: string;
+  expires_in: string;
+  refresh_token: string;
+  token_type?: string;
+  ip_address?: string;
+  thor_token?: string;
+  thor_refresh_token?: string;
+  thor_expiration?: string;
+  enc_userId: string;
+  isLogin: boolean;
 };
 
 export type OptionsGetUserCookie = {
-  decodeVal: boolean;
+  decodeVal?: boolean;
 };
 
 export type MdsInitResponse = {};
