@@ -10,6 +10,7 @@ ts_library(
         "//fe/libs/mds-cookie:lib",
         "//fe/libs/mds-instance:lib",
         "//fe/libs/mds-error:lib",
+        "//fe/libs/utils:lib",
         "//fe/libs/mds-types:lib",
         "@npm//mobile-detect",        
         "@npm//lodash.isempty",

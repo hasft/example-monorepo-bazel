@@ -42,25 +42,31 @@ describe("handle encoded + decoded", () => {
   });
 });
 
-describe("create user cookie", () => {
-  test("createUserCookie no data", () => {
+describe("parse user cookie", () => {
+  test("parse no data", () => {
     expect(new MdsCookie({}).parseUserCookie()).toMatchObject({});
   });
 
-  test("createUsercookie with wrong arg", () => {
+  test("parse with wrong arg", () => {
     const mdsCookie = new MdsCookie({ isLogin: "false" });
     const userCookie = mdsCookie.parseUserCookie();
 
     expect(userCookie).toMatchObject({});
   });
 
-  test("createUsercookie with few arg", () => {
+  test("parse default", () => {
     const mdsCookie = new MdsCookie({
-      isLogin: "false",
+      uid: "some uid",
       "user.token": "token",
+      "user.rf.token": "rf",
       "user.mds.exp": "mdsexp",
     });
     const userCookie = mdsCookie.parseUserCookie();
-    expect(userCookie).toMatchObject({ token: "token", thor_expiration: "mdsexp" });
+    expect(userCookie).toMatchObject({
+      token: "token",
+      thor_expiration: "mdsexp",
+      refresh_token: "rf",
+      enc_userId: "some uid",
+    });
   });
 });

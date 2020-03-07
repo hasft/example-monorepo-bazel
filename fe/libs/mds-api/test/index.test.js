@@ -80,12 +80,5 @@ describe("get services", () => {
         expect(parsed.segment).not.toBeFalsy();
       });
     });
-
-    // describe("getAuth", () => {
-    //   test("should check isLogin and if false fetchAuth", async () => {
-    //     const mdsApi = new MdsApi(config, {});
-    //     const auth = await mdsApi.getAuth();
-    //   });
-    // });
   });
 });

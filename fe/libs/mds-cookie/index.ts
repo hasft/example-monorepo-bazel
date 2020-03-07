@@ -6,8 +6,8 @@ import { ensureString } from "mds/fe/libs/utils";
 import {
   OptionsGetUserCookie,
   MdsUserCookie,
-  MdsResponseAnonymousUser,
   MdsParsedUserCookie,
+  MdsUserStatus,
 } from "mds/fe/libs/mds-types";
 
 const listOfKeysOnUserCookie = [
@@ -17,12 +17,11 @@ const listOfKeysOnUserCookie = [
   "user.mds.token",
   "user.mds.rf.token",
   "user.mds.exp",
-  "user.uid",
-  "isLogin",
+  "uid",
 ];
 
 export default class MdsCookie extends Cookie {
-  getUserCookie(options: OptionsGetUserCookie = { decodeVal: false }): MdsUserCookie | {} {
+  getUserCookie(options: OptionsGetUserCookie = { decodeVal: false }): MdsUserCookie {
     const cookies = this.getAll();
 
     return Object.keys(cookies).reduce((acc, val) => {
@@ -34,7 +33,7 @@ export default class MdsCookie extends Cookie {
     }, {});
   }
 
-  private parseUserCookie(options: OptionsGetUserCookie): MdsParsedUserCookie | {} {
+  parseUserCookie(options: OptionsGetUserCookie = { decodeVal: false }): MdsParsedUserCookie {
     const data = this.getUserCookie(options);
 
     if (isEmpty(data)) {
@@ -47,9 +46,21 @@ export default class MdsCookie extends Cookie {
         thor_token: ensureString(get(data, "user.mds.rf.token")),
         thor_refresh_token: ensureString(get(data, "user.mds.rf.token")),
         thor_expiration: ensureString(get(data, "user.mds.exp")),
-        enc_userId: ensureString(get(data, "info.enc_userid")),
-        isLogin: Boolean(get(data, "isLogin")),
+        enc_userId: ensureString(get(data, "uid")),
       };
+    }
+  }
+
+  getUserStatusCookie(): MdsUserStatus {
+    const isLogin = this.get("isLogin");
+    const ovoTokenExpiredTime = this.get("user.mds.exp");
+
+    if (isLogin === "false" && ovoTokenExpiredTime === "undefined") {
+      return "guest";
+    } else if (isLogin === "true" && ovoTokenExpiredTime !== "undefined") {
+      return "with_thor";
+    } else {
+      return "unknown";
     }
   }
 

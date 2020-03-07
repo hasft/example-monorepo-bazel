@@ -38,29 +38,31 @@ export type MdsAuthParsed = {
   };
 };
 
-export type MdsUserCookie = {
-  "user.token": string;
-  "user.exp": string;
-  "user.rf.token": string;
-  "user.mds.token": string;
-  "user.mds.rf.token": string | "undefined";
-  "user.mds.exp": string | "undefined";
-  "user.uid": string;
-  isLogin: "false" | "true";
-};
+export type MdsUserCookie =
+  | {
+      "user.token": string;
+      "user.exp": string;
+      "user.rf.token": string;
+      "user.mds.token": string;
+      "user.mds.rf.token": string | "undefined";
+      "user.mds.exp": string | "undefined";
+      uid: string;
+    }
+  | {};
 
-export type MdsParsedUserCookie = {
-  token: string;
-  expires_in: string;
-  refresh_token: string;
-  token_type?: string;
-  ip_address?: string;
-  thor_token?: string;
-  thor_refresh_token?: string;
-  thor_expiration?: string;
-  enc_userId: string;
-  isLogin: boolean;
-};
+export type MdsParsedUserCookie =
+  | {
+      token: string;
+      expires_in: string;
+      refresh_token: string;
+      token_type?: string;
+      ip_address?: string;
+      thor_token?: string;
+      thor_refresh_token?: string;
+      thor_expiration?: string;
+      enc_userId: string;
+    }
+  | {};
 
 export type OptionsGetUserCookie = {
   decodeVal?: boolean;
