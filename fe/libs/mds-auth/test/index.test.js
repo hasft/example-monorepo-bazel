@@ -4,68 +4,6 @@ import isEmpty from "lodash.isempty";
 import MdsApiAuth from "../index.js";
 import { config } from "./constants";
 
-// beforeEach(() => {
-//   MdsApiAuth.prototype.loginAsGuest = jest.fn().mockReturnValue({
-//     ok: true,
-//     problem: null,
-//     data: {
-//       data: { token: "some token" },
-//     },
-//   });
-// });
-
-// describe("getuser", () => {
-//   const noCookie = {};
-//   const withCookie = { uid: "uid", "user.token": "token" };
-//   test("loginAsGuest", async () => {
-//     const mdsAuth = new MdsApiAuth(config, noCookie);
-//     expect(await mdsAuth.loginAsGuest()).toMatchObject({
-//       ok: true,
-//       problem: null,
-//       data: {
-//         data: { token: "some token" },
-//       },
-//     });
-//   });
-
-//   MdsApiAuth.prototype.mockGetUser = jest.fn().mockImplementationOnce(() => {
-//     const mock = new MdsApiAuth(config, noCookie);
-//     if (isEmpty(get(noCookie, "uid"))) {
-//       const res = mock.loginAsGuest();
-//       return res.data.data;
-//     } else {
-//       return {
-//         token: cookie["user.token"],
-//       };
-//     }
-//   });
-
-//   MdsApiAuth.prototype.mockGetUserTwo = jest.fn().mockImplementationOnce(() => {
-//     const mock = new MdsApiAuth(config, withCookie);
-//     if (isEmpty(get(withCookie, "uid"))) {
-//       const res = mock.loginAsGuest();
-//       return res.data.data;
-//     } else {
-//       return {
-//         token: withCookie["user.token"],
-//         enc_userId: withCookie["uid"],
-//       };
-//     }
-//   });
-//   test("should loginAsguest if no uidcookie", async () => {
-//     const mdsAuth = new MdsApiAuth(config, noCookie);
-//     const user = await mdsAuth.mockGetUser();
-//     expect(user).toHaveProperty("token");
-//     expect(mdsAuth.loginAsGuest).toHaveBeenCalledTimes(1);
-//   });
-
-//   test("handle had cookie", async () => {
-//     const mdsAuth = new MdsApiAuth(config, withCookie);
-//     const user = await mdsAuth.mockGetUserTwo();
-//     expect(user).toMatchObject({ enc_userId: "uid", token: "token" });
-//   });
-// });
-
 const auth = (cookie = {}, cconfig = config) => new MdsApiAuth(cconfig, cookie);
 
 describe("MDSAUTH", () => {
@@ -92,21 +30,84 @@ describe("MDSAUTH", () => {
     });
   });
 
-  describe("loginAsGuest", () => {
-    test("handle no_config", () => {
-      const guest = auth({}, {}).loginAsGuest();
-      expect(guest).rejects.toHaveProperty("code", "constructor");
+  describe("getStatus", () => {
+    test("unknown", () => {
+      expect(auth({}).getStatus()).toBe("unknown");
+      expect(auth({ uid: "a" }).getStatus()).not.toBe("unknown");
     });
-
-    test("handle err", async () => {
-      const guest = await auth({}, { ...config, accountBaseURL: "http://wrong.co" }).loginAsGuest();
-      expect(guest.problem).toBe("CLIENT_ERROR");
+    test("guest", () => {
+      expect(auth({ uid: "a" }).getStatus()).toBe("guest");
+      expect(auth({ uid: "a", "user.token": "bcd", "user.mds.token": "ll" }).getStatus()).toBe(
+        "guest",
+      );
     });
-
-    test("handle ok", async () => {
-      const guest = await auth({}).loginAsGuest();
-      expect(guest).toHaveProperty("ok");
-      expect(guest.ok).toBeTruthy();
+    test("with_thor", () => {
+      expect(auth({ uid: "a", "user.mds.exp": "3200" }).getStatus()).toBe("with_thor");
     });
   });
+
+  describe("isExpired", () => {
+    test("unkonwn", () => {
+      expect(auth({}).isExpired()).toBeTruthy();
+    });
+    test("guest expiration", () => {
+      expect(auth({ uid: "uid", "user.exp": "2020-03-08%2015:36:26" }).isExpired()).toBe(true);
+      expect(auth({ uid: "uid", "user.exp": "2020-03-08%2017:36:26" }).isExpired()).toBe(false);
+    });
+    test("with_thor expiration", () => {
+      expect(auth({ uid: "uid", "user.mds.exp": "2020-03-08%2015:36:26" }).isExpired()).toBe(true);
+      expect(auth({ uid: "uid", "user.mds.exp": "2020-03-08%2017:36:26" }).isExpired()).toBe(false);
+    });
+  });
+
+  // describe("loginAsGuest", () => {
+  //   test("handle no_config", () => {
+  //     const guest = auth({}, {}).loginAsGuest();
+  //     expect(guest).rejects.toHaveProperty("code", "constructor");
+  //   });
+
+  //   test("handle err", async () => {
+  //     const guest = await auth({}, { ...config, accountBaseURL: "http://wrong.co" }).loginAsGuest();
+  //     expect(guest.problem).toBe("CLIENT_ERROR");
+  //   });
+
+  //   test("handle ok", async () => {
+  //     const guest = await auth({}).loginAsGuest();
+  //     expect(guest).toHaveProperty("ok");
+  //     expect(guest.ok).toBeTruthy();
+  //   });
+  // });
+
+  // describe("getUser", () => {
+  //   test("handle cookie with user.id", async () => {
+  //     const guest = await auth({
+  //       uid: "abcd",
+  //       "user.token": "bcd",
+  //       "user.mds.exp": undefined,
+  //       "user.exp": "exp",
+  //     }).getUser();
+
+  //     expect(guest).toStrictEqual({
+  //       token: "bcd",
+  //       enc_userId: "abcd",
+  //       expires_in: "exp",
+  //     });
+  //   });
+
+  //   test("handle cookie without user.id and failed", async () => {
+  //     const guest = await auth({}, { ...config, accountBaseURL: "http://wrong.co" }).getUser();
+  //     expect(guest).toHaveProperty("code", "CLIENT_ERROR");
+  //   });
+
+  //   test("handle cookie without user.id and success", async () => {
+  //     const guest = await auth({}).getUser();
+  //     expect(guest).toHaveProperty("token");
+  //   });
+  // });
+
+  // describe("parse", () => {
+  //   test("parse status guest", () => {
+  //     expect(auth({}).parse({}).status).toBe("unknown");
+  //   });
+  // });
 });

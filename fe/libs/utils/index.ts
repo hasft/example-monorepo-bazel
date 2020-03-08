@@ -6,3 +6,7 @@ export function ensureString(val: any): string {
   }
   return `${val}`;
 }
+
+export function isServer(): boolean {
+  return !(typeof window != "undefined" && window.document);
+}

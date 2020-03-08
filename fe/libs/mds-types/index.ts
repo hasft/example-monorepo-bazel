@@ -30,39 +30,38 @@ export type MdsConfig = {
 
 export type MdsAuthParsed = {
   status: MdsUserStatus;
-  isExpired: boolean;
   isVerified: boolean;
   token: {
-    matahari: string | null;
-    ovo: string | null;
+    matahari: string | null | undefined;
+    ovo: string | null | undefined;
+  };
+  isExpired: {
+    matahari: boolean | null | undefined;
+    ovo: boolean | null | undefined;
   };
 };
 
-export type MdsUserCookie =
-  | {
-      "user.token": string;
-      "user.exp": string;
-      "user.rf.token": string;
-      "user.mds.token": string;
-      "user.mds.rf.token": string | "undefined";
-      "user.mds.exp": string | "undefined";
-      uid: string;
-    }
-  | {};
+export type MdsUserCookie = {
+  "user.token": string;
+  "user.exp": string;
+  "user.rf.token": string;
+  "user.mds.token": string;
+  "user.mds.rf.token": string | "undefined";
+  "user.mds.exp": string | "undefined";
+  uid: string;
+};
 
-export type MdsParsedUserCookie =
-  | {
-      token: string;
-      expires_in: string;
-      refresh_token: string;
-      token_type?: string;
-      ip_address?: string;
-      thor_token?: string;
-      thor_refresh_token?: string;
-      thor_expiration?: string;
-      enc_userId: string;
-    }
-  | {};
+export type MdsParsedUserCookie = {
+  token: string;
+  expires_in: string;
+  refresh_token: string;
+  token_type?: string;
+  ip_address?: string;
+  thor_token?: string;
+  thor_refresh_token?: string;
+  thor_expiration?: string;
+  enc_userId: string;
+};
 
 export type OptionsGetUserCookie = {
   decodeVal?: boolean;

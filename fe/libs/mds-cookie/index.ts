@@ -21,7 +21,7 @@ const listOfKeysOnUserCookie = [
 ];
 
 export default class MdsCookie extends Cookie {
-  getUserCookie(options: OptionsGetUserCookie = { decodeVal: false }): MdsUserCookie {
+  getUserCookie(options: OptionsGetUserCookie = { decodeVal: false }): MdsUserCookie | {} {
     const cookies = this.getAll();
 
     return Object.keys(cookies).reduce((acc, val) => {
@@ -33,13 +33,13 @@ export default class MdsCookie extends Cookie {
     }, {});
   }
 
-  parseUserCookie(options: OptionsGetUserCookie = { decodeVal: false }): MdsParsedUserCookie {
+  parseUserCookie(options: OptionsGetUserCookie = { decodeVal: false }): MdsParsedUserCookie | {} {
     const data = this.getUserCookie(options);
 
     if (isEmpty(data)) {
       return {};
     } else {
-      return {
+      const obj = {
         token: ensureString(get(data, "user.token")),
         expires_in: ensureString(get(data, "user.exp")),
         refresh_token: ensureString(get(data, "user.rf.token")),
@@ -48,6 +48,13 @@ export default class MdsCookie extends Cookie {
         thor_expiration: ensureString(get(data, "user.mds.exp")),
         enc_userId: ensureString(get(data, "uid")),
       };
+
+      return Object.keys(obj).reduce((acc, val) => {
+        if (obj[val] !== "undefined" && obj[val] !== "null") {
+          acc[val] = obj[val];
+        }
+        return acc;
+      }, {});
     }
   }
 
