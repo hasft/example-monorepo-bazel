@@ -7,7 +7,9 @@ ts_library(
     srcs = glob(["**/*.ts"]),
     module_name = "@matahari/utils",
     deps = [
-        "@npm//@types/node"
+        "@npm//@types/node",
+        "@npm//ramda",
+        "@npm//@types/ramda"        
     ]
 )
 
@@ -39,6 +41,8 @@ jest_test(
         "@npm//@babel/core",
         "@npm//@babel/preset-env",
         "@npm//@jest/transform",
-        "@npm//babel-jest"
+        "@npm//babel-jest",
+        "@npm//ramda",
+        "@npm//@types/ramda"                
     ]
 )

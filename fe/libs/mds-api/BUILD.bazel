@@ -7,10 +7,13 @@ ts_library(
     srcs = glob(["**/*.ts"]),
     module_name = "@matahari/mds-api",
     deps = [
+        "@npm//@types/node",
         "@npm//universal-cookie",
         "@npm//luxon",
         "@npm//@types/luxon",
-        "@npm//ramda"
+        "@npm//ramda",
+        "@npm//@types/ramda",
+        "//fe/libs/utils:lib",        
     ]
 )
 
@@ -40,7 +43,8 @@ jest_test(
         "@npm//@babel/core",
         "@npm//@babel/preset-env",
         "@npm//@jest/transform",
-        "@npm//babel-jest"        
+        "@npm//babel-jest",
+        "//fe/libs/utils:lib",                
     ]
 )
 
