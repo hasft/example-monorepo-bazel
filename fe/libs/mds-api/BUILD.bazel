@@ -7,16 +7,10 @@ ts_library(
     srcs = glob(["**/*.ts"]),
     module_name = "@matahari/mds-api",
     deps = [
-        "//fe/libs/mds-cookie:lib",
-        "//fe/libs/mds-instance:lib",
-        "//fe/libs/mds-types:lib",
-        "//fe/libs/mds-error:lib",
         "@npm//universal-cookie",
-        "@npm//mobile-detect",
-        "@npm//lodash.get",
-        "@npm//@types/lodash.get",
-        "@npm//lodash.isempty",
-        "@npm//@types/lodash.isempty",
+        "@npm//luxon",
+        "@npm//@types/luxon",
+        "@npm//ramda"
     ]
 )
 
@@ -42,17 +36,11 @@ jest_test(
     ],
     deps = [
         ":api",
-        "test/constants.js",
         "//:babel.config.js",
         "@npm//@babel/core",
         "@npm//@babel/preset-env",
         "@npm//@jest/transform",
-        "@npm//babel-jest",
-        "@npm//mobile-detect",
-        "//fe/libs/mds-instance:lib",        
-        "//fe/libs/mds-cookie:lib",
-        "//fe/libs/mds-types:lib",
-        "//fe/libs/mds-error:lib"        
+        "@npm//babel-jest"        
     ]
 )
 

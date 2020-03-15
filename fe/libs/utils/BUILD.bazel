@@ -7,10 +7,6 @@ ts_library(
     srcs = glob(["**/*.ts"]),
     module_name = "@matahari/utils",
     deps = [
-        "@npm//lodash.isempty",
-        "@npm//@types/lodash.isempty",
-        "@npm//lodash.get",
-        "@npm//@types/lodash.get",
         "@npm//@types/node"
     ]
 )
@@ -40,7 +36,6 @@ jest_test(
     deps = [
         ":init",
         "//:babel.config.js",
-        "@npm//lodash.isempty",
         "@npm//@babel/core",
         "@npm//@babel/preset-env",
         "@npm//@jest/transform",
