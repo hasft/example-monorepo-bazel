@@ -1,3 +1,3 @@
-import { MdsCore } from "./Core";
+import { MdsCore, MdsError } from "./Core";
 
-export { MdsCore };
+export { MdsCore, MdsError };

@@ -8,6 +8,7 @@ ts_library(
     module_name = "@matahari/mds-api",
     deps = [
         "@npm//@types/node",
+        "@npm//apisauce",
         "@npm//universal-cookie",
         "@npm//luxon",
         "@npm//@types/luxon",
@@ -44,7 +45,8 @@ jest_test(
         "@npm//@babel/preset-env",
         "@npm//@jest/transform",
         "@npm//babel-jest",
-        "//fe/libs/utils:lib",                
+        "//fe/libs/utils:lib",
+
     ]
 )
 
