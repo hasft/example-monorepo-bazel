@@ -27,8 +27,9 @@ MyApp.getInitialProps = async ({ Component, ctx }) => {
     },
   };
 
-  const mds = new MdsCore(config, ctx.req.headers.cookie, {});
+  const mds = MdsCore(config, ctx.req.headers.cookie, {});
   const session = mds.createSession();
+  console.log(session);
 
   ctx.user = {};
 

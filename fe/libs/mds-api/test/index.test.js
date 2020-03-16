@@ -1,4 +1,5 @@
 import mdsCore from "../index.js";
+
 describe("session", () => {
   test("create session ok even if empty", () => {
     const mds = mdsCore({}, {}, {});
