@@ -1,97 +1,128 @@
 import {
+  bind,
   ifElse,
   where,
-  has,
   prop,
   when,
   complement,
-  isNil,
   allPass,
   is,
   propIs,
-  Arity1Fn,
+  pipe,
+  andThen,
 } from "ramda";
 import { create, ApisauceInstance } from "apisauce";
 import { Settings, DateTime } from "luxon";
-import Cookie from "universal-cookie";
 import { isStringAndValid } from "mds/fe/libs/utils";
+import { IConfig, ICookie, ICoreOptions } from "mds/fe/libs/mds-types";
+import MdsConfig from "./Config";
+import MdsCookie from "./Cookie";
+import MdsError from "./Error";
 
-export interface IConfig {
-  baseURL: string;
-}
-export interface ICookie {}
-export interface ICoreOptions {
-  defaultTimeZone?: string;
-}
+function MdsCore(c: IConfig, ck: ICookie, opt: ICoreOptions) {
+  let config = MdsConfig(c);
+  let cookie = MdsCookie(ck);
+  let options = opt;
 
-class MdsConfig {
-  private config: IConfig;
-  constructor(config: IConfig) {
-    this.config = config;
-  }
+  const core = {
+    setSessionToConfig(session: string) {
+      config.setSessionToConfig(session);
+      return session;
+    },
 
-  getConfig() {
-    return this.config;
-  }
-}
+    setSessionToCookie(session: string) {
+      cookie.set("uniqueid", session);
+      return session;
+    },
+    createSession(): string {
+      const self = this;
+      const conditionOk = where({
+        uniqueid: isStringAndValid,
+        "user.exp": isPersist,
+      });
 
-class MdsCookie extends Cookie {}
+      return ifElse(
+        conditionOk,
+        prop("uniqueid"),
+        pipe(generateCurrentBase64, self.setSessionToConfig, self.setSessionToCookie),
+      )(cookie.getAll());
+    },
+  };
 
-export class MdsError {
-  msg: string;
-  constructor(msg: string) {
-    this.msg = msg;
-  }
-}
-
-class MdsCore {
-  config: MdsConfig;
-  cookie: MdsCookie;
-  options: ICoreOptions;
-
-  constructor(config: IConfig, cookie: ICookie, options: ICoreOptions) {
-    this.config = new MdsConfig(config);
-    this.cookie = new MdsCookie(cookie);
-    this.options = options;
-  }
-
-  private isPersist(expiration: string) {
+  function isPersist(expiration: string) {
     Settings.defaultZoneName = "Asia/Jakarta";
     const exp = DateTime.fromSQL(decodeURIComponent(expiration)).valueOf();
     const now = DateTime.local().valueOf();
     return now < exp;
   }
 
-  private createSession() {
+  function generateCurrentBase64() {
     Settings.defaultZoneName = "Asia/Jakarta";
     const now = DateTime.local().toString();
     return new Buffer(now).toString("base64");
   }
 
-  private handleSession(): string {
-    const cookie: ICookie = this.cookie.getAll();
-
-    const conditionOk = where({
-      uniqueid: isStringAndValid,
-      "user.exp": this.isPersist,
-    });
-
-    return ifElse(conditionOk, prop("uniqueid"), this.createSession)(cookie);
-  }
-
-  private createError(msg: string) {
-    return new MdsError(msg);
-  }
-
-  createInstance(): any {
-    const config = this.config.getConfig();
-    const conditionOk = where({
-      baseURL: isStringAndValid,
-      headers: allPass([is(Object), propIs(String, "client_id"), propIs(String, "client_secret")]),
-    });
-
-    return ifElse(conditionOk, create, this.createError)(config);
-  }
+  return core;
 }
 
-export { MdsCore };
+// class MdsCore {
+//   config: MdsConfig;
+//   cookie: MdsCookie;
+//   options: ICoreOptions;
+
+//   constructor(config: IConfig, cookie: ICookie, options: ICoreOptions) {
+//     this.config = new MdsConfig(config);
+//     this.cookie = new MdsCookie(cookie);
+//     this.options = options;
+//   }
+
+//   public isPersist(expiration: string) {
+//     Settings.defaultZoneName = "Asia/Jakarta";
+//     const exp = DateTime.fromSQL(decodeURIComponent(expiration)).valueOf();
+//     const now = DateTime.local().valueOf();
+//     return now < exp;
+//   }
+
+//   public generateCurrentBase64() {
+//     Settings.defaultZoneName = "Asia/Jakarta";
+//     const now = DateTime.local().toString();
+//     return new Buffer(now).toString("base64");
+//   }
+
+//   setSessionToConfig = (session: string) => {
+//     this.config.setSession(session);
+//     return session;
+//   };
+
+//   setSessionToCookie = (session: string) => {
+//     this.cookie.set("uniqueid", session);
+//     return session;
+//   };
+
+//   createSession(): string {
+//     const cookie: ICookie = this.cookie.getAll();
+
+//     const conditionOk = where({
+//       uniqueid: isStringAndValid,
+//       "user.exp": this.isPersist,
+//     });
+
+//     return ifElse(conditionOk, prop("uniqueid"), pipe(this.generateCurrentBase64))(cookie);
+//   }
+
+//   private createError(msg: string): MdsError {
+//     return new MdsError(msg);
+//   }
+
+//   private createInstance(target: "server" | "client" = "server"): ApisauceInstance | MdsError {
+//     const config = this.config.getConfig(target);
+//     const conditionOk = where({
+//       baseURL: isStringAndValid,
+//       headers: allPass([is(Object), propIs(String, "client_id"), propIs(String, "client_secret")]),
+//     });
+
+//     return ifElse(conditionOk, create, this.createError)(config);
+//   }
+// }
+
+export default MdsCore;

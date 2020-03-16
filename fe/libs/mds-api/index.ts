@@ -1,3 +1,3 @@
-import { MdsCore, MdsError } from "./Core";
+import mdsCore from "./Core";
 
-export { MdsCore, MdsError };
+export default mdsCore;

@@ -9,7 +9,6 @@ ts_library(
     deps = [
         "@npm//@types/node",
         "@npm//ramda",
-        "@npm//@types/ramda"        
     ]
 )
 

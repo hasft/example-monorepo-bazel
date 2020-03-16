@@ -13,8 +13,8 @@ ts_library(
         "@npm//luxon",
         "@npm//@types/luxon",
         "@npm//ramda",
-        "@npm//@types/ramda",
-        "//fe/libs/utils:lib",        
+        "//fe/libs/utils:lib",
+        "//fe/libs/mds-types:lib",                
     ]
 )
 

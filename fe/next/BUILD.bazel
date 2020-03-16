@@ -23,13 +23,11 @@ DEPS = [
     "//:package.json",
     "//:tsconfig.json",
     "//fe/libs/mds-api:lib",
-    "//fe/libs/mds-cookie:lib",
     "@npm//dotenv",
     "@npm//typescript",
     "@npm//@types/react",
     "@npm//@types/react-dom",
-    "@npm//@types/node",
-    "@npm//@types/lodash.isempty",
+    "@npm//@types/node"
 ]
 
 next(
