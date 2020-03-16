@@ -18,3 +18,7 @@ export interface ICookie {
 export interface ICoreOptions {
   defaultTimeZone?: string;
 }
+
+export interface ICoreError {
+  msg: string;
+}

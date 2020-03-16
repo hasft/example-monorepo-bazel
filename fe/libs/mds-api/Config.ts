@@ -4,7 +4,7 @@ export default function(conf: IConfig) {
   let config = conf;
 
   const core = {
-    getConfig(target: "server" | "client") {
+    getConfig(target: "server" | "client" = "server") {
       return config;
     },
 
