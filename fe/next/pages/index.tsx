@@ -1,5 +1,6 @@
 import * as React from "react";
 import { NextPage, NextPageContext } from "next";
+import Nav from "mds/fe/next/src/components/nav";
 
 interface HomeProps {
   user: {};
@@ -8,7 +9,7 @@ interface HomeProps {
 const Home: NextPage<HomeProps> = props => {
   return (
     <div>
-      <div>home</div>
+      <Nav />
     </div>
   );
 };

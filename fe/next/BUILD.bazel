@@ -5,7 +5,8 @@ load("@npm//next:index.bzl", "next")
 EXCLUDE_PATTERNS = [
     ".next/**",
     "out/**",
-    "assets/**",    
+    "assets/**",
+    "__tests__/**"
 ]
 
 filegroup(
@@ -43,18 +44,38 @@ next(
     ],
 )
 
+load("//:jest.bzl", "jest_test")
+
+TEST_EXCLUDE_PATTERNS = [
+    ".next/**",
+    "out/**",
+    "assets/**",
+    "tsconfig.json"
+]
+
 filegroup(
-    name = "testfile",
-    srcs = ["app"],
-    output_group = "es5_sources",
+    name = "test_sources",
+    srcs = glob(
+        ["**/*.*"],
+        exclude = TEST_EXCLUDE_PATTERNS,
+    ),
 )
 
-load("//:jest.bzl", "jest_test")
+TEST_DEPS = [
+    "//:package.json",
+    "@npm//jest-environment-jsdom-sixteen",
+    "@npm//@types/jest",
+    "@npm//ts-jest",
+    "@npm//@testing-library/dom",
+    "@npm//@testing-library/jest-dom",
+    "@npm//@testing-library/react",
+    "@npm//@testing-library/user-event",
+]
 
 jest_test(
     name = "test",
-    srcs = ["__tests__/example.test.js"],
-    jest_config = "//:jest.config.dom.js",
+    srcs = ["__tests__/example.test.tsx"],
+    jest_config = ":jest.config.js",
     tags = [
         # Need to set the pwd to avoid jest needing a runfiles helper
         # Windows users with permissions can use --enable_runfiles
@@ -63,15 +84,8 @@ jest_test(
         # TODO: why does this fail almost all the time, but pass on local Mac?
         "no-bazelci-mac",
     ],
-    deps = [
-        ":testfile",
-        "//:babel.config.js",
-        "@npm//@babel/core",
-        "@npm//@babel/preset-env",
-        "@npm//@jest/transform",
-        "@npm//babel-jest"
-
+    deps = TEST_DEPS + [
+        ":test_sources"
     ]
 )
-
 
