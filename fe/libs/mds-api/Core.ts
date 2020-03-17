@@ -1,17 +1,4 @@
-import {
-  ifElse,
-  where,
-  prop,
-  when,
-  allPass,
-  is,
-  propIs,
-  pipe,
-  compose,
-  has,
-  andThen,
-  pick,
-} from "ramda";
+import { ifElse, where, prop, when, allPass, is, propIs, pipe, compose, has } from "ramda";
 import { create, ApisauceInstance } from "apisauce";
 import { Settings, DateTime } from "luxon";
 import { isStringAndValid } from "mds/fe/libs/utils";
@@ -56,7 +43,7 @@ function MdsCore(c: IConfig, ck: ICookie, opt: ICoreOptions) {
       cookie.set("uniqueid", session);
     },
 
-    setSessionToCookieAndConfig(session: string) {
+    saveSession(session: string) {
       const self = this;
       self.setSessionToCookie(session);
       self.setSessionToConfig(session);
@@ -70,23 +57,8 @@ function MdsCore(c: IConfig, ck: ICookie, opt: ICoreOptions) {
       instance.setHeaders({ ...instance.headers, ...headers });
     },
 
-    fetchInit(): Promise<any> | ICoreError {
-      const isConfigReady = where({
-        baseURL: propIs(String),
-        headers: allPass([
-          has("session_id"),
-          has("client_id"),
-          has("client_secret"),
-          has("device_id"),
-          has("client_version"),
-        ]),
-      });
-
-      return ifElse(
-        isConfigReady,
-        async () => await instance.get("/promo/v1/init?platform=mobilesite&version=1.22.0"),
-        () => createError("config not ready"),
-      )(config.getConfig);
+    async fetchInit(): Promise<any> {
+      return await instance.get("/promo/v1/init?platform=mobilesite&version=1.22.0");
     },
   };
 

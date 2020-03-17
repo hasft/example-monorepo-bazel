@@ -1,4 +1,4 @@
-import mdsCore from "../index.js";
+import mdsCore from "../Core.js";
 
 describe("session", () => {
   test("create session ok even if empty", () => {
@@ -6,7 +6,7 @@ describe("session", () => {
     expect(mds.createSession()).toBeTruthy();
   });
   test("create session if find uniqueid and not expired", () => {
-    const mds = mdsCore({}, { uniqueid: "some", "user.exp": "2020-03-17%2011:08:40" }, {});
+    const mds = mdsCore({}, { uniqueid: "some", "user.exp": "2024-03-17%2011:08:40" }, {});
     expect(mds.createSession()).toBe("some");
   });
   test("set session to config", () => {
@@ -21,7 +21,7 @@ describe("session", () => {
   });
   test("set session to cookie and config", () => {
     const mds = mdsCore({}, {}, {});
-    mds.setSessionToCookieAndConfig("as");
+    mds.saveSession("as");
     expect(mds.getCookie()).toStrictEqual({ uniqueid: "as" });
     expect(mds.getConfig()).toStrictEqual({ headers: { session_id: "as" } });
   });
@@ -40,9 +40,15 @@ describe("instance", () => {
 });
 
 describe("fetchInit", () => {
-  test("check is config ok", async () => {
+  test("check problem", async () => {
     const mds = mdsCore({ baseURL: "base", headers: { session_id: "asdsa" } }, {}, {});
-    const res = await mds.fetchInit();
-    console.log("object", res);
+    //mocker
+    const fetchInit = jest.fn().mockImplementationOnce(function() {
+      return { ok: false, problem: true, data: "" };
+    });
+    mds.fetchInit = fetchInit.bind(mds);
+    const init = await mds.fetchInit();
+    expect(init).toHaveProperty("problem");
+    expect(init).toHaveProperty("ok");
   });
 });
