@@ -76,7 +76,7 @@ function MdsCore(c: IConfig, ck: ICookie, opt: ICoreOptions) {
   function generateCurrentBase64() {
     Settings.defaultZoneName = "Asia/Jakarta";
     const now = DateTime.local().toString();
-    return new Buffer(now).toString("base64");
+    return Buffer.from(now).toString("base64");
   }
 
   return core;
