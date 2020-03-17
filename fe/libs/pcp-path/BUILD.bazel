@@ -1,0 +1,40 @@
+package(default_visibility = ["//visibility:public"])
+
+load("//:jest.bzl", "jest_test")
+
+jest_test(
+    name = "test",
+    srcs = [
+        "pcp-path.test.js",
+        "path.test.js",
+        "pcp-query.test.js",
+        "pcp-filter.test.js"
+    ],
+    jest_config = "//:jest.config.js",
+    tags = [
+        # Need to set the pwd to avoid jest needing a runfiles helper
+        # Windows users with permissions can use --enable_runfiles
+        # to make this test work
+        "no-bazelci-windows",
+        # TODO: why does this fail almost all the time, but pass on local Mac?
+        "no-bazelci-mac",
+    ],
+    deps = [
+        "//:babel.config.js",
+        "index.js",
+        "pcp-path.js",
+        "parsePath.js",
+        "pcp-query.js",
+        "parseQuery.js",
+        "pcp-filter.js",
+        "@npm//qs",
+        "@npm//lodash.union",
+        "@npm//lodash.get",
+        "@npm//lodash.isempty",
+        "@npm//@babel/core",
+        "@npm//@babel/preset-env",
+        "@npm//@jest/transform",
+        "@npm//babel-jest",
+    ],
+)
+

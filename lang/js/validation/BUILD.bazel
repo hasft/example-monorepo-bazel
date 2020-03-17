@@ -1,0 +1,16 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
+
+rollup_bundle(
+    name = "bundle",
+    entry_point = "index.js",
+    deps = [],
+    format = "cjs"
+)
+
+filegroup(
+    name = "es2015",
+    srcs = [":bundle.js"],
+    data = [":bundle"]
+)

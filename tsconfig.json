@@ -2,8 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "mm/*": ["*", "dist/*", "bazel-out/*", "bazel-bin/*", "bazel-genfiles/*"],
-      "@mm/*": ["*", "dist/*", "bazel-out/*", "bazel-bin/*", "bazel-genfiles/*"]
+      "mds/*": ["*", "bazel-bin/*", "bazel-genfiles/*"],
+      "@matahari/*": ["*", "bazel-bin/*", "bazel-genfiles/*"]
     },
     "module": "commonjs",
     "noImplicitAny": false,

@@ -1,0 +1,92 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@npm//next:index.bzl", "next")
+
+EXCLUDE_PATTERNS = [
+    ".next/**",
+    "out/**",
+    "assets/**",
+    "__tests__/**"
+]
+
+filegroup(
+    name = "sources",
+    srcs = glob(
+        ["**/*.*"],
+        exclude = EXCLUDE_PATTERNS,
+    ),
+)
+
+load("@npm//next:index.bzl", "next")
+
+DEPS = [
+    "//:.env",
+    "//:package.json",
+    "//:tsconfig.json",
+    "//fe/libs/mds-api:lib",
+    "@npm//dotenv",
+    "@npm//typescript",
+    "@npm//@types/react",
+    "@npm//@types/react-dom",
+    "@npm//@types/node"
+]
+
+next(
+    name = "app",
+    args = [
+        "dev",
+        "fe/next",
+        "-p",
+        "3001",
+    ],
+    data = DEPS + [
+        ":sources",
+    ],
+)
+
+load("//:jest.bzl", "jest_test")
+
+TEST_EXCLUDE_PATTERNS = [
+    ".next/**",
+    "out/**",
+    "assets/**",
+    "tsconfig.json"
+]
+
+filegroup(
+    name = "test_sources",
+    srcs = glob(
+        ["**/*.*"],
+        exclude = TEST_EXCLUDE_PATTERNS,
+    ),
+)
+
+TEST_DEPS = [
+    "//:package.json",
+    "@npm//jest-environment-jsdom-sixteen",
+    "@npm//@types/jest",
+    "@npm//jest",
+    "@npm//ts-jest",
+    "@npm//@testing-library/dom",
+    "@npm//@testing-library/jest-dom",
+    "@npm//@testing-library/react",
+    "@npm//@testing-library/user-event",
+]
+
+jest_test(
+    name = "test",
+    srcs = ["__tests__/example.test.tsx"],
+    jest_config = ":jest.config.js",
+    tags = [
+        # Need to set the pwd to avoid jest needing a runfiles helper
+        # Windows users with permissions can use --enable_runfiles
+        # to make this test work
+        "no-bazelci-windows",
+        # TODO: why does this fail almost all the time, but pass on local Mac?
+        "no-bazelci-mac",
+    ],
+    deps = TEST_DEPS + [
+        ":test_sources"
+    ]
+)
+
