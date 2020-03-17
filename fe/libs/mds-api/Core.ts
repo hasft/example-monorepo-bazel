@@ -1,8 +1,21 @@
-import { ifElse, where, prop, when, allPass, is, propIs, pipe } from "ramda";
+import {
+  ifElse,
+  where,
+  prop,
+  when,
+  allPass,
+  is,
+  propIs,
+  pipe,
+  compose,
+  has,
+  andThen,
+  pick,
+} from "ramda";
 import { create, ApisauceInstance } from "apisauce";
 import { Settings, DateTime } from "luxon";
 import { isStringAndValid } from "mds/fe/libs/utils";
-import { IConfig, ICookie, ICoreOptions } from "mds/fe/libs/mds-types";
+import { IConfig, ICookie, ICoreOptions, ICoreError } from "mds/fe/libs/mds-types";
 import MdsConfig from "./Config";
 import MdsCookie from "./Cookie";
 import MdsError from "./Error";
@@ -10,44 +23,70 @@ import MdsError from "./Error";
 function MdsCore(c: IConfig, ck: ICookie, opt: ICoreOptions) {
   let config = MdsConfig(c);
   let cookie = MdsCookie(ck);
+  let instance: ApisauceInstance = create(c);
   let options = opt;
 
   const core = {
-    setSessionToConfig(session: string) {
-      config.setSessionToConfig(session);
-      return session;
+    getConfig() {
+      return config.getConfig();
     },
 
-    setSessionToCookie(session: string) {
-      cookie.set("uniqueid", session);
-      return session;
+    getCookie() {
+      return cookie.getAll();
+    },
+
+    getInstance() {
+      return instance;
     },
 
     createSession(): string {
-      const self = this;
       const conditionOk = where({
         uniqueid: isStringAndValid,
         "user.exp": isPersist,
       });
 
-      return ifElse(
-        conditionOk,
-        prop("uniqueid"),
-        pipe(generateCurrentBase64, self.setSessionToConfig, self.setSessionToCookie),
-      )(cookie.getAll());
+      return ifElse(conditionOk, prop("uniqueid"), generateCurrentBase64)(cookie.getAll());
     },
 
-    createInstance(target: "server" | "client" = "server"): ApisauceInstance {
-      const conditionOk = where({
-        baseURL: isStringAndValid,
+    setSessionToConfig(session: string) {
+      config.setSessionToConfig(session);
+    },
+
+    setSessionToCookie(session: string) {
+      cookie.set("uniqueid", session);
+    },
+
+    setSessionToCookieAndConfig(session: string) {
+      const self = this;
+      self.setSessionToCookie(session);
+      self.setSessionToConfig(session);
+    },
+
+    updateInstance(config: IConfig) {
+      const baseURL = config.baseURL;
+      const headers = config.headers;
+
+      instance.setBaseURL(baseURL);
+      instance.setHeaders({ ...instance.headers, ...headers });
+    },
+
+    fetchInit(): Promise<any> | ICoreError {
+      const isConfigReady = where({
+        baseURL: propIs(String),
         headers: allPass([
-          is(Object),
-          propIs(String, "client_id"),
-          propIs(String, "client_secret"),
+          has("session_id"),
+          has("client_id"),
+          has("client_secret"),
+          has("device_id"),
+          has("client_version"),
         ]),
       });
 
-      return ifElse(conditionOk, create, createError)(config.getConfig());
+      return ifElse(
+        isConfigReady,
+        async () => await instance.get("/promo/v1/init?platform=mobilesite&version=1.22.0"),
+        () => createError("config not ready"),
+      )(config.getConfig);
     },
   };
 
