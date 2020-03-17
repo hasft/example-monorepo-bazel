@@ -10,4 +10,5 @@ module.exports = {
       packageJson: "package.json",
     },
   },
+  setupFilesAfterEnv: ["./jest.setup.ts"],
 };
